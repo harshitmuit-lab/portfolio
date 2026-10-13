@@ -7,6 +7,10 @@
       "destination": "https://cdn.sanity.io/:path*"
     },
     {
+      "source": "/",
+      "destination": "/start/index.html"
+    },
+    {
       "source": "/start",
       "destination": "/start/index.html"
     },
@@ -17,6 +21,18 @@
     {
       "source": "/start/:path*",
       "destination": "/start/:path*"
+    },
+    {
+      "source": "/portfolio",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portfolio/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/portfolio/:path*",
+      "destination": "/index.html"
     },
     {
       "source": "/((?!assets/|textures/|images/|fonts/|sounds/|videos/|cursors/|start/).*)",

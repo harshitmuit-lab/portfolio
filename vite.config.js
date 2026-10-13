@@ -3,12 +3,15 @@ import react from '@vitejs/plugin-react'
 import viteCompression from 'vite-plugin-compression';
 import { generateSeoHtml } from './seo-plugin.js';
 
-const START_PAGE_PATHS = new Set(['/start', '/start/']);
+const START_PAGE_PATHS = new Set(['/', '/start', '/start/']);
+const PORTFOLIO_PATHS = new Set(['/portfolio', '/portfolio/']);
 
 function rewriteStartPage(req, _res, next) {
   const [pathname, query = ''] = req.url.split('?');
 
-  if (START_PAGE_PATHS.has(pathname)) {
+  if (PORTFOLIO_PATHS.has(pathname)) {
+    req.url = `/index.html${query ? `?${query}` : ''}`;
+  } else if (START_PAGE_PATHS.has(pathname)) {
     req.url = `/start/index.html${query ? `?${query}` : ''}`;
   }
 

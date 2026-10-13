@@ -2,8 +2,13 @@
 # /stara-strona /nowa-strona 301
 # Przekierowania z www na non-www ustawiamy bezpośrednio w zakładce "Rules -> Redirect Rules" w panelu głównym domeny w Cloudflare.
 
-# Lekka, statyczna strona startowa. Reguły dokładne muszą być przed trasami SPA.
+# Lekka, statyczna strona startowa na głównej stronie i /start
+/       /start/index.html  200
 /start  /start/index.html  200
 /start/ /start/index.html  200
 
-# Pozostałe ścieżki (/gallery, /about itd.) obsługuje automatyczny fallback SPA Cloudflare Pages.
+# Interaktywne 3D portfolio
+/portfolio   /index.html  200
+/portfolio/  /index.html  200
+
+# Pozostałe ścieżki (/gallery, /about itd.) obsługuje automatyczny fallback SPA.

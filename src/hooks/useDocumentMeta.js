@@ -11,7 +11,7 @@ import { useScene } from '../context/SceneContext';
 
 const ROOM_META = {
     null: {
-        path: '/',
+        path: '/portfolio',
         title: 'Harshit Sharma — Creative 3D Portfolio',
         description: 'Interactive 3D developer portfolio of Harshit Sharma. Explore WebGL experiments, React projects & GSAP animations in a hand-drawn gallery.',
     },
@@ -39,6 +39,7 @@ const ROOM_META = {
 
 // Map URL paths back to room IDs for deep linking
 const PATH_TO_ROOM = {
+    '/portfolio': null,
     '/': null,
     '/about': 'about',
     '/gallery': 'gallery',
