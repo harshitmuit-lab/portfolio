@@ -4,7 +4,7 @@ import { createImageUrlBuilder } from '@sanity/image-url';
 export const sanityClient = createClient({
     projectId: 'wun5kc6h', // Zostanie uzupełnione po utworzeniu projektu w Sanity
     dataset: 'production',
-    useCdn: true, // `false` dla środowiska dev, `true` dla produkcji żeby było szybciej
+    useCdn: false, // `false` dla natychmiastowej synchronizacji w czasie rzeczywistym
     apiVersion: '2024-03-01', // aktualna data API
 });
 
