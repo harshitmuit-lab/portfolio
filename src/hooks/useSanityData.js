@@ -97,11 +97,37 @@ export function loadSanityData() {
                 `)
             ]);
 
-            // Curated gallery projects (Guardian Voice, Luminere, empty slots)
-            cache.projects = GALLERY_PROJECTS;
+            // Mapowanie danych galerii i techStack na ścieżki lokalne oraz optymalizacja obrazków z Sanity
+            if (projectsData && projectsData.length > 0) {
+                cache.projects = projectsData.map(p => {
+                    const frontUrl = p.frontImage ? getProxyUrl(urlFor(p.frontImage).width(1024).quality(80).auto('format')) : null;
+                    const paintedUrl = p.paintedImage ? getProxyUrl(urlFor(p.paintedImage).width(1024).quality(80).auto('format')) : null;
+                    return {
+                        ...p,
+                        front: frontUrl,
+                        painted: paintedUrl,
+                        techStack: p.techStack ? p.techStack.map(t => t.startsWith('/') ? t : '/textures/gallery/' + t) : []
+                    };
+                });
+            } else {
+                cache.projects = GALLERY_PROJECTS;
+            }
 
-            // Studio content uses curated portfolio features from CONTENT_DATA
-            cache.content = CONTENT_DATA;
+            // Mapowanie danych studio, przypisanie id oraz optymalizacja obrazków z Sanity
+            if (contentData && contentData.length > 0) {
+                cache.content = contentData.map((item, index) => {
+                    const frontTextureUrl = item.frontTexture ? getProxyUrl(urlFor(item.frontTexture).width(1024).quality(80).auto('format')) : null;
+                    const paintedFrontTextureUrl = item.paintedFrontTexture ? getProxyUrl(urlFor(item.paintedFrontTexture).width(1024).quality(80).auto('format')) : null;
+                    return {
+                        ...item,
+                        id: item.platform + '-' + index,
+                        frontTexture: frontTextureUrl,
+                        paintedFrontTexture: paintedFrontTextureUrl
+                    };
+                });
+            } else {
+                cache.content = CONTENT_DATA;
+            }
 
             // Mapowanie nagród do struktury oczekiwanej przez overlay oraz optymalizacja certyfikatów z Sanity
             if (awardsData && awardsData.length > 0) {
@@ -206,11 +232,45 @@ export function isSanityDataLoaded() {
 }
 
 export function useGalleryProjects() {
-    return GALLERY_PROJECTS;
+    const [projects, setProjects] = useState(cache.projects || GALLERY_PROJECTS);
+
+    useEffect(() => {
+        loadSanityData();
+
+        if (cache.loaded) {
+            setProjects(cache.projects || GALLERY_PROJECTS);
+            return;
+        }
+
+        const handleUpdate = () => {
+            setProjects(cache.projects || GALLERY_PROJECTS);
+        };
+
+        return subscribe(handleUpdate);
+    }, []);
+
+    return projects;
 }
 
 export function useStudioContent() {
-    return CONTENT_DATA;
+    const [content, setContent] = useState(cache.content || CONTENT_DATA);
+
+    useEffect(() => {
+        loadSanityData();
+
+        if (cache.loaded) {
+            setContent(cache.content || CONTENT_DATA);
+            return;
+        }
+
+        const handleUpdate = () => {
+            setContent(cache.content || CONTENT_DATA);
+        };
+
+        return subscribe(handleUpdate);
+    }, []);
+
+    return content;
 }
 
 export function useAwards() {

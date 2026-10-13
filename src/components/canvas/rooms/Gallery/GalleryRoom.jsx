@@ -199,6 +199,7 @@ const GalleryRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     // We use the same conditional logic: painted on desktop, regular on touch
     const allLogos = useMemo(() => {
         const names = [
+            'pythonlogo',
             'csslogo', 'elementorlogo', 'firebaselogo', 'htmllogo',
             'jslogo', 'netlifylogo', 'phplogo', 'reactlogo',
             'tailwindlogo', 'wordpresslogo'

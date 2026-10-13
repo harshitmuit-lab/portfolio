@@ -15,6 +15,7 @@ const HARSHIT_INFO = {
 
 // Tech stack filename -> human-readable name mapping for JSON-LD
 const TECH_STACK_NAMES = {
+    'pythonlogo.webp': 'Python',
     'reactlogo.webp': 'React',
     'htmllogo.webp': 'HTML',
     'csslogo.webp': 'CSS',

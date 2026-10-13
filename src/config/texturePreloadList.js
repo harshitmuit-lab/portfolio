@@ -144,6 +144,7 @@ export const GALLERY_TEXTURES_VERSIONED = [
     'tylkartki',
     'przyciskdotylukartki',
     // Tech stack logos
+    'pythonlogo',
     'csslogo',
     'elementorlogo',
     'firebaselogo',

@@ -60,6 +60,7 @@ export default {
       of: [{ type: 'string' }],
       options: {
         list: [
+          { title: 'Python', value: 'pythonlogo.webp' },
           { title: 'React', value: 'reactlogo.webp' },
           { title: 'HTML', value: 'htmllogo.webp' },
           { title: 'CSS', value: 'csslogo.webp' },
