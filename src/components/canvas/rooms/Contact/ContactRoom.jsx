@@ -91,6 +91,15 @@ const PHASE = {
     DONE: 'done'               // Bottle floating away
 };
 
+// Social links configuration
+const SOCIAL_LINKS = {
+    linkedin: 'https://www.linkedin.com/in/harshit-sharma-596726383',
+    github: 'https://github.com/harshitmuit-lab',
+    facebook: '',
+    instagram: 'https://www.instagram.com/_harshit_sharma_52/?hl=en',
+    email: 'harshitmuit@gmail.com',
+};
+
 const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const { camera } = useThree();
     const { isTeleporting } = useScene();
@@ -248,8 +257,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     }, [hasSignaledReady.current, showRoom, camera]);
 
     const handleMailSelect = () => {
-        // Awaryjne przekierowanie mailto:
-        window.location.href = 'mailto:tomszma12@gmail.com';
+        window.location.href = `mailto:${SOCIAL_LINKS.email}`;
 
         /* 
         setShowSelection(false);
@@ -404,7 +412,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, 0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="LINKEDIN"
-                onClick={() => window.open('https://www.linkedin.com/in/tomasz-szmajda-259337305/', '_blank')}
+                onClick={() => window.open(SOCIAL_LINKS.linkedin, '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
@@ -414,7 +422,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, 0.3, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="GITHUB"
-                onClick={() => window.open('https://github.com/ITomPoland', '_blank')}
+                onClick={() => window.open(SOCIAL_LINKS.github, '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
@@ -424,7 +432,11 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, -0.2, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="FACEBOOK"
-                onClick={() => window.open('https://www.facebook.com/people/ITom/61586563487664/', '_blank')}
+                onClick={() => {
+                    if (SOCIAL_LINKS.facebook) {
+                        window.open(SOCIAL_LINKS.facebook, '_blank');
+                    }
+                }}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />
@@ -434,7 +446,7 @@ const ContactRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
                 rotation={[0, -0.3, 0]}
                 texturePath="/textures/contact/beczka.webp"
                 label="INSTAGRAM"
-                onClick={() => window.open('https://www.instagram.com/itom.dev/', '_blank')}
+                onClick={() => window.open(SOCIAL_LINKS.instagram, '_blank')}
                 paintOnBeforeCompile={onBeforeCompile}
                 paintUniforms={uniformsData}
             />

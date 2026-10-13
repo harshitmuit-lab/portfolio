@@ -3,6 +3,8 @@ import { sanityClient, urlFor, getProxyUrl } from '../config/sanity';
 import { useTexture } from '@react-three/drei';
 import { useLoader } from '@react-three/fiber';
 import { TextureLoader } from 'three';
+import { CONTENT_DATA } from '../components/canvas/rooms/Studio/contentData';
+import { GALLERY_PROJECTS } from '../components/canvas/rooms/Gallery/galleryData';
 
 // Flaga bezpieczeństwa: Jeśli użytkownik nie wpisał jeszcze Project ID, 
 // hooki zwrócą null, co pozwoli na załadowanie danych hardcodowanych (fallback).
@@ -10,8 +12,8 @@ export const isSanityConfigured = sanityClient.config().projectId !== 'YOUR_PROJ
 
 // Globalny cache dla danych z Sanity
 const cache = {
-    projects: null,
-    content: null,
+    projects: GALLERY_PROJECTS,
+    content: CONTENT_DATA,
     awards: null,
     loading: false,
     loaded: false,
@@ -95,33 +97,11 @@ export function loadSanityData() {
                 `)
             ]);
 
-            // Mapowanie danych galerii i techStack na ścieżki lokalne oraz optymalizacja obrazków z Sanity
-            if (projectsData && projectsData.length > 0) {
-                cache.projects = projectsData.map(p => {
-                    const frontUrl = p.frontImage ? getProxyUrl(urlFor(p.frontImage).width(1024).quality(80).auto('format')) : null;
-                    const paintedUrl = p.paintedImage ? getProxyUrl(urlFor(p.paintedImage).width(1024).quality(80).auto('format')) : null;
-                    return {
-                        ...p,
-                        front: frontUrl,
-                        painted: paintedUrl,
-                        techStack: p.techStack ? p.techStack.map(t => '/textures/gallery/' + t) : []
-                    };
-                });
-            }
+            // Curated gallery projects (Guardian Voice, Luminere, empty slots)
+            cache.projects = GALLERY_PROJECTS;
 
-            // Mapowanie danych studio, przypisanie id oraz optymalizacja obrazków z Sanity
-            if (contentData && contentData.length > 0) {
-                cache.content = contentData.map((item, index) => {
-                    const frontTextureUrl = item.frontTexture ? getProxyUrl(urlFor(item.frontTexture).width(1024).quality(80).auto('format')) : null;
-                    const paintedFrontTextureUrl = item.paintedFrontTexture ? getProxyUrl(urlFor(item.paintedFrontTexture).width(1024).quality(80).auto('format')) : null;
-                    return {
-                        ...item,
-                        id: item.platform + '-' + index,
-                        frontTexture: frontTextureUrl,
-                        paintedFrontTexture: paintedFrontTextureUrl
-                    };
-                });
-            }
+            // Studio content uses curated portfolio features from CONTENT_DATA
+            cache.content = CONTENT_DATA;
 
             // Mapowanie nagród do struktury oczekiwanej przez overlay oraz optymalizacja certyfikatów z Sanity
             if (awardsData && awardsData.length > 0) {
@@ -140,21 +120,21 @@ export function loadSanityData() {
                         id: 'award-sotd',
                         layout: 'certificate_grid',
                         title: 'Site of the Day Awards',
-                        items: mapItems(awardsData.filter(a => a.category === 'sotd')),
+                        items: [],
                         platformConfig: { label: 'ACHIEVEMENT', color: '#1a1a1a', icon: '🏆' }
                     },
                     sotm: {
                         id: 'award-sotm',
                         layout: 'certificate_grid',
                         title: 'Site of the Month Awards',
-                        items: mapItems(awardsData.filter(a => a.category === 'sotm')),
+                        items: [],
                         platformConfig: { label: 'AWARD', color: '#1a1a1a', icon: '📅' }
                     },
                     other: {
                         id: 'award-other',
                         layout: 'certificate_grid',
                         title: 'Other Awards',
-                        items: mapItems(awardsData.filter(a => a.category === 'other')),
+                        items: [],
                         platformConfig: { label: 'PRESTIGE', color: '#1a1a1a', icon: '👑' }
                     }
                 };
@@ -226,45 +206,11 @@ export function isSanityDataLoaded() {
 }
 
 export function useGalleryProjects() {
-    const [projects, setProjects] = useState(cache.projects);
-
-    useEffect(() => {
-        loadSanityData();
-
-        if (cache.loaded) {
-            setProjects(cache.projects);
-            return;
-        }
-
-        const handleUpdate = () => {
-            setProjects(cache.projects);
-        };
-
-        return subscribe(handleUpdate);
-    }, []);
-
-    return projects;
+    return GALLERY_PROJECTS;
 }
 
 export function useStudioContent() {
-    const [content, setContent] = useState(cache.content);
-
-    useEffect(() => {
-        loadSanityData();
-
-        if (cache.loaded) {
-            setContent(cache.content);
-            return;
-        }
-
-        const handleUpdate = () => {
-            setContent(cache.content);
-        };
-
-        return subscribe(handleUpdate);
-    }, []);
-
-    return content;
+    return CONTENT_DATA;
 }
 
 export function useAwards() {

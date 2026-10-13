@@ -266,7 +266,6 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
     // Refs for all animated elements
     const groupRef = useRef();
     const titleRef = useRef();
-    const brandRef = useRef();
     const avatarRef = useRef();
     const motto1Ref = useRef();
     const motto2Ref = useRef();
@@ -274,11 +273,10 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
     // Base positions
     const baseY = 2;
 
-    // Calculate aspect ratio
-    // LEGACY FIX: Use original dimensions (2816x1536) to prevent stretching
-    const legacyAspectRatio = 2816 / 1536; 
-    const avatarWidth = 6; // Zwiększony rozmiar awatara na chmurce
-    const avatarHeight = avatarWidth / legacyAspectRatio;
+    // Calculate aspect ratio (1376x768) to prevent stretching
+    const avatarAspectRatio = 1376 / 768; 
+    const avatarWidth = 6;
+    const avatarHeight = avatarWidth / avatarAspectRatio;
 
     // Animation: floating + spread apart when close
     useFrame((state) => {
@@ -324,9 +322,6 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
         if (titleRef.current) {
             titleRef.current.position.x = -spreadFactor * maxSpread * 0.8;
         }
-        if (brandRef.current) {
-            brandRef.current.position.x = spreadFactor * maxSpread * 0.6;
-        }
         if (avatarRef.current) {
             // Avatar: floating + spread upward
             avatarRef.current.position.y = baseY + Math.sin(time * 0.8) * 0.15 + spreadFactor * 3;
@@ -352,20 +347,7 @@ const IntroMilestone = ({ z, scrollProgressRef }) => {
                 anchorY="middle"
                 font="/fonts/RubikScribble-Regular.ttf"
             >
-                TOMASZ SZMAJDA
-            </Text>
-
-            {/* Subtitle - Brand (spreads right) */}
-            <Text
-                ref={brandRef}
-                position={[0, 4.3, 0.1]}
-                fontSize={0.45}
-                color="#4a4a4a"
-                anchorX="center"
-                anchorY="middle"
-                font="/fonts/CabinSketch-Regular.ttf"
-            >
-                (ITOM)
+                HARSHIT SHARMA
             </Text>
 
             {/* Avatar on cloud - floating + spreads up-left */}
@@ -434,12 +416,7 @@ const AWARDS_DATA = {
         id: 'award-sotd',
         layout: 'certificate_grid',
         title: 'Site of the Day Awards',
-        items: [
-            { label: 'SOTD - GSAP', date: 'February 13, 2026', image: '/textures/about/SOTDAYYOUNGMULTIGSAP.webp', url: 'https://www.linkedin.com/posts/greensock_site-of-the-day-young-multi-this-immersive-activity-7427567524940017664-zU2n?utm_source=share&utm_medium=member_desktop&rcm=ACoAAE3TV6UBqXoaJXUN5-1s3ij6SQJwTRAcbCM' },
-            { label: 'SOTD - CSS Winner', date: 'January 24, 2026', image: '/textures/about/SOTDAYYOUNGMULTICSSWINNER.webp', url: 'https://www.csswinner.com/details/young-multi-official-experience/19045' },
-            { label: 'SOTD - Orpetron', date: 'January 29, 2026', image: '/textures/about/SOTDAYYOUNGMULTIORPETRON.webp', url: 'https://orpetron.com/sites/young-multi/' },
-            { label: 'SOTD - Design Nominess', date: 'February 17, 2026', image: '/textures/about/SOTDAYYOUNGMULTIDESIGNNOMINESS.webp', url: 'https://www.designnominees.com/sites/young-multi' }
-        ],
+        items: [],
         platformConfig: {
             label: 'AWARD',
             color: '#1a1a1a',
@@ -477,7 +454,11 @@ const AWARDS_DATA = {
 const AwardsMilestone = ({ z, scrollProgressRef }) => {
     // Pobieranie danych nagród z Sanity (z fallbackiem)
     const sanityAwards = useAwards();
-    const awardsData = sanityAwards || AWARDS_DATA;
+    const awardsData = {
+        sotd: { ...(sanityAwards?.sotd || AWARDS_DATA.sotd), items: [] },
+        sotm: { ...(sanityAwards?.sotm || AWARDS_DATA.sotm), items: [] },
+        other: { ...(sanityAwards?.other || AWARDS_DATA.other), items: [] }
+    };
 
     const { camera, viewport } = useThree();
     const isTouch = isTouchDevice();
@@ -684,7 +665,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    {awardsData.sotd.items.length}
+                    0
                 </Text>
             </group>
 
@@ -745,7 +726,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    {awardsData.sotm.items.length}
+                    0
                 </Text>
             </group>
 
@@ -805,7 +786,7 @@ const AwardsMilestone = ({ z, scrollProgressRef }) => {
                     anchorY="middle"
                     font="/fonts/CabinSketch-Bold.ttf"
                 >
-                    {awardsData.other.items.length}
+                    0
                 </Text>
             </group>
         </group>

@@ -137,10 +137,9 @@ export const GALLERY_TEXTURES_BASE = [
 
 export const GALLERY_TEXTURES_VERSIONED = [
     // Project cards
-    'monetuneprzod',
-    'timberkittyprzod',
-    'youngmultiprzod',
-    'bioprzod',
+    'guardian_voice',
+    'luminere',
+    'empty_slot',
     // Card back
     'tylkartki',
     'przyciskdotylukartki',
@@ -190,11 +189,6 @@ export const ABOUT_TEXTURES = [
     '/textures/about/SOTM_painted.webp',
     '/textures/about/button.webp',
     '/textures/about/button_painted.webp',
-    // Award images (for overlay)
-    '/textures/about/SOTDAYYOUNGMULTICSSWINNER.webp',
-    '/textures/about/SOTDAYYOUNGMULTIGSAP.webp',
-    '/textures/about/SOTDAYYOUNGMULTIORPETRON.webp',
-    '/textures/about/SOTDAYYOUNGMULTIDESIGNNOMINESS.webp',
     // Journey islands
     '/textures/about/uowyspa.webp',
     '/textures/about/freelancewyspa.webp',

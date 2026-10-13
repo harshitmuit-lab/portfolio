@@ -13,6 +13,7 @@ import GalleryClouds from './GalleryClouds';
 import { useAudio } from '../../../../context/AudioManager';
 import { usePaintMaterial } from './usePaintMaterial';
 import { useGalleryProjects } from '../../../../hooks/useSanityData';
+import { GALLERY_PROJECTS } from './galleryData';
 
 // Reusable Vector3 to avoid allocations in useFrame
 const _tempScale = new THREE.Vector3();
@@ -33,45 +34,8 @@ export const GALLERY_INTERACTION_AUDIO_SETTINGS = {
     rolloff: 2        // How fast the sound fades away (exponential)
 };
 
-// Define the unique projects and their textures
-const FALLBACK_PROJECTS = [
-    {
-        id: 'monetune',
-        title: 'MONETUNE',
-        front: '/textures/gallery/monetuneprzod.webp',
-        painted: '/textures/gallery/monetuneprzod_painted.webp',
-        url: 'https://monetune.pl',
-        description: 'MoneTune is a step-by-step blueprint that teaches beginners how to generate passive income using AI-created music. Without any musical skills, you will learn how to easily produce professional tracks, publish them on platforms like Spotify, and monetize your digital assets.',
-        techStack: ['/textures/gallery/wordpresslogo.webp', '/textures/gallery/elementorlogo.webp', '/textures/gallery/phplogo.webp', '/textures/gallery/csslogo.webp']
-    },
-    {
-        id: 'timber',
-        title: 'TIMBERKITTY',
-        front: '/textures/gallery/timberkittyprzod.webp',
-        painted: '/textures/gallery/timberkittyprzod_painted.webp',
-        url: 'https://timberkitty.netlify.app',
-        description: 'TimberKitty is an addictive, free-to-play browser arcade game built in pure JavaScript. Players control a lumberjack cat to chop wood, save birds, complete daily missions, and compete on global leaderboards.',
-        techStack: ['/textures/gallery/jslogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp', '/textures/gallery/firebaselogo.webp']
-    },
-    {
-        id: 'young',
-        title: 'YOUNG MULTI',
-        front: '/textures/gallery/youngmultiprzod.webp',
-        painted: '/textures/gallery/youngmultiprzod_painted.webp',
-        url: 'https://young-multi-strona.netlify.app',
-        description: 'A sleek, modern concept website dedicated to the Polish rapper and creator Young Multi. It serves as a promotional landing page designed to highlight his personal brand, music, and online presence.',
-        techStack: ['/textures/gallery/reactlogo.webp', '/textures/gallery/tailwindlogo.webp', '/textures/gallery/htmllogo.webp', '/textures/gallery/netlifylogo.webp']
-    },
-    {
-        id: 'bio',
-        title: 'BIO',
-        front: '/textures/gallery/bioprzod.webp',
-        painted: '/textures/gallery/bioprzod_painted.webp',
-        url: 'https://tomkingbio.netlify.app',
-        description: 'A fast, modern personal bio page serving as a central hub for my digital footprint. It showcases my latest coding projects, web development services, YouTube videos, and recommended music artists.',
-        techStack: ['/textures/gallery/htmllogo.webp', '/textures/gallery/csslogo.webp', '/textures/gallery/jslogo.webp', '/textures/gallery/netlifylogo.webp']
-    },
-];
+// Curated projects for Gallery
+const FALLBACK_PROJECTS = GALLERY_PROJECTS;
 
 const PROJECT_COUNT = 10; // Keep the count for the infinite scroll feel
 const GAP = 2.5;
@@ -1143,61 +1107,63 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                 </mesh>
 
                 {/* === PRZYCISK: OPEN NA PLECACH KARTKI === */}
-                <group
-                    ref={buttonGroupRef}
-                    position={[0, 0.75, 0]}
-                    rotation={[Math.PI, 0, 0]}
-                >
-                    {/* Warstwa 1: Wizualna ramka przycisku (bez eventów) */}
-                    <mesh>
-                        <planeGeometry args={[1.2, 1.2 / 3.613]} />
-                        <meshBasicMaterial color="#ffffff"
-                            map={project.buttonTexture}
-                            transparent={true}
-                            alphaTest={0.05}
-                        />
-                    </mesh>
-
-                    {/* Warstwa 2: Napis OPEN PROJECT (bez eventów) */}
-                    <Text
-                        ref={openTextRef}
-                        position={[0, 0, 0.01]}
-                        fontSize={0.11}
-                        color={btnHovered ? "#333333" : "#1c1c1c"}
-                        font="/fonts/CabinSketch-Bold.ttf"
-                        anchorX="center"
-                        anchorY="middle"
-                        fillOpacity={0} // Start hidden
+                {!project.isEmpty && project.url && (
+                    <group
+                        ref={buttonGroupRef}
+                        position={[0, 0.75, 0]}
+                        rotation={[Math.PI, 0, 0]}
                     >
-                        OPEN PROJECT
-                    </Text>
+                        {/* Warstwa 1: Wizualna ramka przycisku (bez eventów) */}
+                        <mesh>
+                            <planeGeometry args={[1.2, 1.2 / 3.613]} />
+                            <meshBasicMaterial color="#ffffff"
+                                map={project.buttonTexture}
+                                transparent={true}
+                                alphaTest={0.05}
+                            />
+                        </mesh>
 
-                    {/* Warstwa 3: Niewidoczny hit-area pokrywający cały przycisk - łapie WSZYSTKIE eventy */}
-                    <mesh
-                        position={[0, 0, 0.02]}
-                        onClick={(e) => {
-                            if (isSelected && !isTransitioning) {
-                                e.stopPropagation();
-                                window.open(project.url, '_blank');
-                            }
-                        }}
-                        onPointerEnter={(e) => {
-                            if (isSelected && !isTransitioning) {
-                                e.stopPropagation();
-                                setBtnHovered(true);
-                            }
-                        }}
-                        onPointerLeave={(e) => {
-                            if (isSelected && !isTransitioning) {
-                                e.stopPropagation();
-                            }
-                            setBtnHovered(false);
-                        }}
-                    >
-                        <planeGeometry args={[1.2, 1.2 / 3.613]} />
-                        <meshBasicMaterial color="#e0e0e0" transparent={true} opacity={0} />
-                    </mesh>
-                </group>
+                        {/* Warstwa 2: Napis OPEN PROJECT (bez eventów) */}
+                        <Text
+                            ref={openTextRef}
+                            position={[0, 0, 0.01]}
+                            fontSize={0.11}
+                            color={btnHovered ? "#333333" : "#1c1c1c"}
+                            font="/fonts/CabinSketch-Bold.ttf"
+                            anchorX="center"
+                            anchorY="middle"
+                            fillOpacity={0} // Start hidden
+                        >
+                            OPEN PROJECT
+                        </Text>
+
+                        {/* Warstwa 3: Niewidoczny hit-area pokrywający cały przycisk - łapie WSZYSTKIE eventy */}
+                        <mesh
+                            position={[0, 0, 0.02]}
+                            onClick={(e) => {
+                                if (isSelected && !isTransitioning) {
+                                    e.stopPropagation();
+                                    window.open(project.url, '_blank');
+                                }
+                            }}
+                            onPointerEnter={(e) => {
+                                if (isSelected && !isTransitioning) {
+                                    e.stopPropagation();
+                                    setBtnHovered(true);
+                                }
+                            }}
+                            onPointerLeave={(e) => {
+                                if (isSelected && !isTransitioning) {
+                                    e.stopPropagation();
+                                }
+                                setBtnHovered(false);
+                            }}
+                        >
+                            <planeGeometry args={[1.2, 1.2 / 3.613]} />
+                            <meshBasicMaterial color="#e0e0e0" transparent={true} opacity={0} />
+                        </mesh>
+                    </group>
+                )}
 
                 {/* === TEKST NA PLECACH KARTKI (PROJECT DETAILS) === */}
                 <group
@@ -1215,7 +1181,7 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         anchorY="middle"
                         fillOpacity={0} // Start hidden
                     >
-                        PROJECT DETAILS:
+                        {project.isEmpty ? "RESERVED SLOT" : "PROJECT DETAILS:"}
                     </Text>
 
                     <Text
@@ -1231,43 +1197,45 @@ const ProjectCard = memo(forwardRef(({ index, project, clothespinTexture, curren
                         textAlign="center"
                         fillOpacity={0} // Start hidden
                     >
-                        {project.description || "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco."}
+                        {project.description || "Project slot reserved for upcoming creative work."}
                     </Text>
                 </group>
 
                 {/* === SEKCJA TECH STACK NA PLECACH KARTKI === */}
-                <group
-                    ref={techStackGroupRef}
-                    position={[0, 0.30, 0]} // Pomiędzy Project Details a przyciskiem Open Project
-                    rotation={[Math.PI, 0, 0]}
-                >
-                    <Text
-                        ref={techTextRef}
-                        position={[0, 0.15, 0.01]}
-                        fontSize={0.08}
-                        color="#1c1c1c"
-                        font="/fonts/CabinSketch-Bold.ttf"
-                        anchorX="center"
-                        anchorY="middle"
-                        fillOpacity={0} // Start hidden
+                {!project.isEmpty && project.techStack && project.techStack.length > 0 && (
+                    <group
+                        ref={techStackGroupRef}
+                        position={[0, 0.30, 0]} // Pomiędzy Project Details a przyciskiem Open Project
+                        rotation={[Math.PI, 0, 0]}
                     >
-                        TECH STACK
-                    </Text>
+                        <Text
+                            ref={techTextRef}
+                            position={[0, 0.15, 0.01]}
+                            fontSize={0.08}
+                            color="#1c1c1c"
+                            font="/fonts/CabinSketch-Bold.ttf"
+                            anchorX="center"
+                            anchorY="middle"
+                            fillOpacity={0} // Start hidden
+                        >
+                            TECH STACK
+                        </Text>
 
-                    {/* Kontener na loga układane poziomo */}
-                    <group position={[0, -0.05, 0.01]}>
-                        {project.techStack && project.techStack.map((logoPath, idx) => {
-                            // Rozstawienie kwadracików (4 sztuki wyśrodkowane)
-                            const spacing = 0.30;
-                            const startX = -((project.techStack.length - 1) * spacing) / 2;
-                            const xPos = startX + (idx * spacing);
+                        {/* Kontener na loga układane poziomo */}
+                        <group position={[0, -0.05, 0.01]}>
+                            {project.techStack && project.techStack.map((logoPath, idx) => {
+                                // Rozstawienie kwadracików (4 sztuki wyśrodkowane)
+                                const spacing = 0.30;
+                                const startX = -((project.techStack.length - 1) * spacing) / 2;
+                                const xPos = startX + (idx * spacing);
 
-                            return (
-                                <TechStackLogo key={idx} path={logoPath} position={[xPos, 0, 0]} />
-                            );
-                        })}
+                                return (
+                                    <TechStackLogo key={idx} path={logoPath} position={[xPos, 0, 0]} />
+                                );
+                            })}
+                        </group>
                     </group>
-                </group>
+                )}
 
                 {/* 
                   === TEKST / TYTUŁY PROJEKTÓW ===

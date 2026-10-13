@@ -107,9 +107,8 @@ const StudioRoom = ({ showRoom, onReady, isExiting, isWarmup }) => {
     const { globalVolume, isMuted } = useAudio();
     const effectiveVolume = isMuted ? 0 : AUDIO_SETTINGS.volume * globalVolume;
 
-    // Pobieranie danych z Sanity.io (fallback do starych danych)
-    const sanityContent = useStudioContent();
-    const activeContent = sanityContent || CONTENT_DATA;
+    // Studio content: portfolio key features, architecture, and engineering
+    const activeContent = CONTENT_DATA;
 
     const audioRef = useRef();
     useEffect(() => {

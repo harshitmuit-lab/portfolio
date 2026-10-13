@@ -1,4 +1,4 @@
-# 🎨 ITom Dev | Interactive 3D WebGL Portfolio
+# 🎨 Harshit Sharma | Interactive 3D WebGL Portfolio
 
 <div align="center">
   <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React" />
@@ -10,7 +10,7 @@
 
 <br/>
 
-Welcome to the open-source repository of **Tomasz "ITom" Szmajda's** interactive 3D Web Developer portfolio. This project pushes the limits of modern web technologies by blending spatial WebGL computing, complex React ecosystems, and highly optimized frontend engineering.
+Welcome to the repository of **Harshit Sharma's** interactive 3D Web Developer portfolio. This project pushes the limits of modern web technologies by blending spatial WebGL computing, complex React ecosystems, and highly optimized frontend engineering.
 
 > [!NOTE]
 > Ensure hardware acceleration is enabled in your browser settings to experience the smooth 60 FPS high-tier rendering of this application.
@@ -56,8 +56,8 @@ To run this application natively on your local machine:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/ITomPoland/portfolio-itom.git
-   cd portfolio-itom
+   git clone https://github.com/harshitmuit-lab/portfolio.git
+   cd portfolio
    ```
 
 2. **Install dependencies:**
@@ -85,11 +85,11 @@ All PRs improving the shader physics, 3D math logic, or component memoization ru
 ## License
 
 The code in this repository is licensed under the [MIT License](LICENSE). 
-**Note:** All personal assets, 3D textures, images, and copywriting are copyright of Tomasz Szmajda and may not be reused or reproduced without explicit permission.
+**Note:** All personal assets, 3D textures, images, and copywriting are copyright of Harshit Sharma and may not be reused or reproduced without explicit permission.
 3. Commit your Changes (`git commit -m 'feat: Added realistic liquid simulation to Contact Room'`)
 4. Push to the Branch (`git push origin feature/AmazingRoom`)
 5. Open a Pull Request
 
 ---
 
-*Designed and Developed by [Tomasz Szmajda (ITom Dev)](https://itomdev.com).*
+*Designed and Developed by [Harshit Sharma](https://github.com/harshitmuit-lab).*
