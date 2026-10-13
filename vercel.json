@@ -1,6 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/start",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/sanity-cdn/:path*",
