@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": true,
+  "framework": "vite",
   "redirects": [
     {
       "source": "/",
@@ -14,20 +14,12 @@
       "destination": "https://cdn.sanity.io/:path*"
     },
     {
-      "source": "/",
-      "destination": "/start/index.html"
-    },
-    {
       "source": "/start",
       "destination": "/start/index.html"
     },
     {
       "source": "/start/",
       "destination": "/start/index.html"
-    },
-    {
-      "source": "/start/:path*",
-      "destination": "/start/:path*"
     },
     {
       "source": "/portfolio",
@@ -42,7 +34,7 @@
       "destination": "/index.html"
     },
     {
-      "source": "/((?!assets/|textures/|images/|fonts/|sounds/|videos/|cursors/|start/).*)",
+      "source": "/((?!assets/|textures/|images/|fonts/|sounds/|videos/|cursors/|start(?:/|$)).*)",
       "destination": "/index.html"
     }
   ],
