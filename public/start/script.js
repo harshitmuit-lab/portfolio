@@ -107,63 +107,64 @@ for (const link of document.querySelectorAll('[data-pending]')) {
 }
 document.addEventListener('keydown', event => { if (event.key === 'Escape') { dismissNotice(); resetAll(); } });
 
-/* Video Scrubbing */
-const scrubVideo = document.getElementById('scrub-video');
-if (scrubVideo && window.matchMedia('(hover: hover)').matches) {
-  let targetTime = 0;
-  let currentTime = 0;
+/* Frame Scrubbing (Canvas-based for 0ms seek latency and 60/120fps fluid response) */
+const canvas = document.getElementById('scrub-video');
+if (canvas && window.matchMedia('(hover: hover)').matches) {
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const totalFrames = 58;
+  const frames = [];
+  let currentProgress = 0;
+  let targetProgress = 0;
   let rafId = null;
-  let pendingTime = null;
-  let isMetadataLoaded = scrubVideo.readyState >= 1;
 
-  scrubVideo.pause();
+  canvas.width = 1920;
+  canvas.height = 1080;
 
-  scrubVideo.addEventListener('loadedmetadata', () => {
-    isMetadataLoaded = true;
-  });
+  // Preload all frames asynchronously
+  for (let i = 1; i <= totalFrames; i++) {
+    const img = new Image();
+    img.src = `/videos/frames/frame_${String(i).padStart(3, '0')}.webp`;
+    img.onload = () => {
+      if (i === 1 && currentProgress === 0) {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      }
+    };
+    frames.push(img);
+  }
 
-  const applySeek = (time) => {
-    if (!isMetadataLoaded && scrubVideo.readyState < 1) return;
-    if (scrubVideo.seeking) {
-      pendingTime = time;
-      return;
+  const render = () => {
+    currentProgress += (targetProgress - currentProgress) * 0.25;
+    const diff = Math.abs(targetProgress - currentProgress);
+
+    const frameIndex = Math.min(
+      totalFrames - 1,
+      Math.max(0, Math.round(currentProgress * (totalFrames - 1)))
+    );
+
+    const frame = frames[frameIndex];
+    if (frame && frame.complete && frame.naturalWidth > 0) {
+      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
     }
-    try {
-      scrubVideo.currentTime = time;
-    } catch (e) {}
-  };
 
-  scrubVideo.addEventListener('seeked', () => {
-    if (pendingTime !== null) {
-      const nextTime = pendingTime;
-      pendingTime = null;
-      applySeek(nextTime);
-    }
-  });
-
-  const updateVideo = () => {
-    currentTime += (targetTime - currentTime) * 0.35;
-    const diff = Math.abs(targetTime - currentTime);
-
-    if (diff > 0.005) {
-      applySeek(currentTime);
-      rafId = requestAnimationFrame(updateVideo);
+    if (diff > 0.001) {
+      rafId = requestAnimationFrame(render);
     } else {
-      currentTime = targetTime;
-      applySeek(targetTime);
+      currentProgress = targetProgress;
+      const finalIndex = Math.min(
+        totalFrames - 1,
+        Math.max(0, Math.round(targetProgress * (totalFrames - 1)))
+      );
+      if (frames[finalIndex]?.complete && frames[finalIndex].naturalWidth > 0) {
+        ctx.drawImage(frames[finalIndex], 0, 0, canvas.width, canvas.height);
+      }
       rafId = null;
     }
   };
 
   const handleMouseMove = (event) => {
-    // Disable on touch devices or if reduced motion is enabled
     if (reducedMotion.matches || event.pointerType === 'touch') return;
-    
-    const yPos = Math.max(0, Math.min(1, event.clientY / window.innerHeight));
-    if (scrubVideo.duration && !isNaN(scrubVideo.duration)) {
-      targetTime = yPos * scrubVideo.duration;
-      if (!rafId) rafId = requestAnimationFrame(updateVideo);
-    }
+    targetProgress = Math.max(0, Math.min(1, event.clientY / window.innerHeight));
+    if (!rafId) rafId = requestAnimationFrame(render);
   };
 
   window.addEventListener('pointermove', handleMouseMove, { passive: true });
