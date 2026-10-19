@@ -113,6 +113,7 @@ if (scrubVideo && window.matchMedia('(hover: hover)').matches) {
   let targetTime = 0;
   let currentTime = 0;
   let rafId = null;
+  let pendingTime = null;
   let isMetadataLoaded = scrubVideo.readyState >= 1;
 
   scrubVideo.pause();
@@ -121,22 +122,35 @@ if (scrubVideo && window.matchMedia('(hover: hover)').matches) {
     isMetadataLoaded = true;
   });
 
+  const applySeek = (time) => {
+    if (!isMetadataLoaded && scrubVideo.readyState < 1) return;
+    if (scrubVideo.seeking) {
+      pendingTime = time;
+      return;
+    }
+    try {
+      scrubVideo.currentTime = time;
+    } catch (e) {}
+  };
+
+  scrubVideo.addEventListener('seeked', () => {
+    if (pendingTime !== null) {
+      const nextTime = pendingTime;
+      pendingTime = null;
+      applySeek(nextTime);
+    }
+  });
+
   const updateVideo = () => {
-    // Używamy wyższego współczynnika (0.4 zamiast 0.1), aby reagowało natychmiast, zachowując minimalne wygładzenie
-    currentTime += (targetTime - currentTime) * 0.4;
-    
-    // Jeśli jesteśmy wystarczająco blisko, wyrównujemy i zatrzymujemy pętlę
-    if (Math.abs(targetTime - currentTime) > 0.01) {
-      if (isMetadataLoaded || scrubVideo.readyState >= 1) {
-        try {
-          scrubVideo.currentTime = currentTime;
-        } catch (e) {}
-      }
+    currentTime += (targetTime - currentTime) * 0.35;
+    const diff = Math.abs(targetTime - currentTime);
+
+    if (diff > 0.005) {
+      applySeek(currentTime);
       rafId = requestAnimationFrame(updateVideo);
     } else {
-      // Wyrównanie do celu na sam koniec
-      try { scrubVideo.currentTime = targetTime; } catch(e){}
       currentTime = targetTime;
+      applySeek(targetTime);
       rafId = null;
     }
   };
